@@ -1,5 +1,7 @@
 package com.alex;
 
+import com.interfaces.Selector;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +21,33 @@ public class Sequence {
         }
     }
 
+    public class SequenceSelector implements Selector{
+        private int i =0;
+        @Override
+        public boolean end() {
+            return i== items.length;
+        }
+
+        @Override
+        public Object current() {
+            return items[i];
+        }
+
+        @Override
+        public void next() {
+            if(i<items.length){
+                i++;
+            }
+        }
+
+        public Sequence getSequence(){
+            return Sequence.this;
+        }
+    }
+
+    public Selector selector(){
+        return new SequenceSelector();
+    }
     public static void main(String[] args) {
         Sequence sequence = new Sequence(10);
         List<Integer> s = new ArrayList<>();
@@ -27,7 +56,10 @@ public class Sequence {
             s.add(i);
         }
         int i=0;
-        System.out.println(s.get(++i));
-        System.out.println(i++);
+        Selector selector = sequence.selector();
+        while (!selector.end()){
+            System.out.println(selector.current());
+            selector.next();
+        }
     }
 }
